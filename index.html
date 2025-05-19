@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поиск и выделение слова</title>
+    <script src="https://cdn.jsdelivr.net/npm/pyodide@0.21.1/pyodide.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f3e5; 
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 550px;
+            box-sizing: border-box;
+        }
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        textarea:focus, input[type="text"]:focus {
+            border-color: #007BFF; 
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            background-color: #007BFF; 
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3; 
+        }
+        #highlighted-text {
+            font-size: 18px;
+            color: #2d3748;
+            margin-top: 20px;
+        }
+        mark {
+            background-color: #f2d600;
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Поиск и выделение слова</h1>
+        <textarea id="text" rows="6" placeholder="Введите текст здесь..."></textarea>
+        <input type="text" id="word" placeholder="Введите слово для поиска..." />
+        <button id="search-button">Выделить слово</button>
+        <div id="highlighted-text"></div>
+    </div>
+
+    <script>
+        loadPyodide().then(pyodide => {
+            document.getElementById('search-button').addEventListener('click', function() {
+                const text = document.getElementById('text').value;
+                const word = document.getElementById('word').value;
+
+                const pythonCode = `
+text = '''${text}'''
+word = '''${word}'''
+highlighted_text = text.replace(word, '<mark>' + word + '</mark>')
+highlighted_text
+`;
+
+                pyodide.runPythonAsync(pythonCode).then(result => {
+                    document.getElementById('highlighted-text').innerHTML = result;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
